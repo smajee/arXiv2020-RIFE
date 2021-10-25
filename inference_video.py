@@ -169,7 +169,11 @@ def build_read_buffer(user_args, read_buffer, videogen):
 
 def make_inference(I0, I1, n):
     global model
+
+    print(I0.shape)
+
     middle = model.inference(I0, I1, args.scale)
+    
     if n == 1:
         return [middle]
     first_half = make_inference(I0, middle, n=n//2)
