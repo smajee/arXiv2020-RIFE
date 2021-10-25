@@ -83,49 +83,44 @@ for i in range(len(density)):
 
 # %%
 
-def interpolate_density(I0, I1, model, device, scale=0.5):
+def interpolate_density(x0, x1, model, device, scale=0.5):
     """
     Args:
-        I0 ([ndarry]): 2D image
-        I1 ([ndarry]): 2D image
+        x0 ([ndarry]): 2D image
+        x1 ([ndarry]): 2D image
     """
 
 
-    I0 = np.repeat(np.expand_dims(scale*I0, 0), 3, axis=0)
-    I1 = np.repeat(np.expand_dims(scale*I1, 0), 3, axis=0)
+    x0 = np.repeat(np.expand_dims(scale*x0, 0), 3, axis=0)
+    x1 = np.repeat(np.expand_dims(scale*x1, 0), 3, axis=0)
 
-    I0 = torch.from_numpy(I0).to(device, non_blocking=True).unsqueeze(0).float()
-    I1 = torch.from_numpy(I1).to(device, non_blocking=True).unsqueeze(0).float()
+    x0 = torch.from_numpy(x0).to(device, non_blocking=True).unsqueeze(0).float()
+    x1 = torch.from_numpy(x1).to(device, non_blocking=True).unsqueeze(0).float()
 
-    middle = model.inference(I0, I1)
+    middle = model.inference(x0, x1)
 
     return middle.detach().cpu().numpy()[0][0]/scale
 
-I0 = density[0]
-I1 = density[4]
-phantom = density[2]
-middle = interpolate_density(I0, I1, model, device)
-subplot_image([I0, middle, phantom, I1], ['1', 'mid', 'phantom', '2'], vmin=0, vmax=1)
+def plot_density_interp(density, i0, i1, model, device):
 
-I0 = density[0]
-I1 = density[10]
-phantom = density[5]
-middle = interpolate_density(I0, I1, model, device)
-subplot_image([I0, middle, phantom, I1], ['1', 'mid', 'phantom', '2'], vmin=0, vmax=1)
+    assert (i1-i0)%2==0, 'ids must be evenly spaced'
 
-I0 = density[0]
-I1 = density[20]
-phantom = density[10]
-middle = interpolate_density(I0, I1, model, device)
-subplot_image([I0, middle, phantom, I1], ['1', 'mid', 'phantom', '2'], vmin=0, vmax=1)
+    x0 = density[i0]
+    x1 = density[i1]
+    phantom = density[(i0+i1)//2]
+    middle = interpolate_density(x0, x1, model, device)
+    subplot_image([x0, middle, phantom, x1], 
+        [str(i0), 'mid', str((i0+i1)//2), str(i1)], 
+        vmin=0, vmax=1, figsize=(20,6))
 
 
-I0 = density[0]
-I1 = density[40]
-phantom = density[20]
-middle = interpolate_density(I0, I1, model, device)
-subplot_image([I0, middle, phantom, I1], ['1', 'mid', 'phantom', '2'], vmin=0, vmax=1)
+plot_density_interp(density, 0, 4, model, device)
 
+plot_density_interp(density, 0, 10, model, device)
+
+plot_density_interp(density, 0, 20, model, device)
+
+plot_density_interp(density, 0, 40, model, device)
 
 
 # %%
