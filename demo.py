@@ -114,6 +114,7 @@ def plot_density_interp(density, i0, i1, model, device):
         vmin=0, vmax=1, figsize=(20,6))
 
 
+!mkdir output
 plot_density_interp(density, 0, 4, model, device)
 
 plot_density_interp(density, 0, 10, model, device)
@@ -123,4 +124,10 @@ plot_density_interp(density, 0, 20, model, device)
 plot_density_interp(density, 0, 40, model, device)
 
 
+# %%
+
+plot_density_interp(density, 19, 21, model, device)
+plot_density_interp(density, 18, 22, model, device)
+plot_density_interp(density, 16, 24, model, device)
+plot_density_interp(density, 12, 28, model, device)
 # %%
